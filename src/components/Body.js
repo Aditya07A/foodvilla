@@ -1,6 +1,7 @@
-import resList from "../utlis/mockData";
-import { useState } from "react";
+// import resList from "../utlis/mockData";
+import { useState, useEffect } from "react";
 import { CDN_URL } from "../utlis/constants.js";
+import Shimmer from "./Shimmer.js";
 
 const ResturantCard = (props) => {
   const { resData } = props;
@@ -33,17 +34,75 @@ const ResturantCard = (props) => {
 };
 
 const Body = () => {
-  const [listOfResturants, setListOfRestutant] = useState(resList);
-  return (
+  const [listOfResturants, setListOfRestutant] = useState([]);
+  const [searchText, setSearchText] = useState("");
+  const [filteredResturant, setFilteredResturant] = useState([]);
+  
+
+  console.log("body rendered");
+  // const [listOfResturants, setListOfRestutant] = useState(resList); data coming from mockdata reslist
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const data = await fetch(
+      "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9715987&lng=77.5945627&page_type=DESKTOP_WEB_LISTING"
+    );
+
+    const json = await data.json();
+    console.log(json);
+    //not got way of writing code
+    //  setListOfRestutant(json.data.cards[2].data.data.cards)
+
+    //optional chaning is good way
+    setListOfRestutant(json?.data?.cards[2]?.data?.data?.cards);
+    setFilteredResturant(json?.data?.cards[2]?.data?.data?.cards);
+  };
+
+  //loading will come before API renders, but not a good way
+  //  if(listOfResturants.length === 0){
+  //   // return <h1>Loading...</h1>;
+
+  //   //for fake cards shimmer
+  //   return <Shimmer/>;
+  //  }
+
+  return listOfResturants.length === 0 ? (
+    <Shimmer />
+  ) : (
     <div className="body">
       <div className="filter">
+        <div className="search">
+          <input
+            type="text"
+            className="search-box"
+            value={searchText}
+            onChange={(e) => {
+              setSearchText(e.target.value);
+            }}
+          ></input>
+          <button
+            onClick={() => {
+              console.log(searchText);
+
+              const filteredResturant = listOfResturants.filter((res) =>
+                res.data.name.toLowerCase().includes(searchText.toLowerCase())
+              );
+              setFilteredResturant(filteredResturant);
+            }}
+          >
+            search
+          </button>
+        </div>
         <button
           className="filter-btn"
           onClick={() => {
             const filteredList = listOfResturants.filter(
-              (res) => res.data.avgRating>4
-              );
-              console.log("clicked");
+              (res) => res.data.avgRating > 4
+            );
+            console.log("clicked");
             setListOfRestutant(filteredList);
           }}
         >
@@ -52,7 +111,8 @@ const Body = () => {
       </div>
       <div className="res-container">
         {/* here by using map we are using dynamic data for resturant */}
-        {listOfResturants.map((restaurant) => (
+        {filteredResturant.map((restaurant) => (
+        // {listOfResturants.map((restaurant) => (
           <ResturantCard key={restaurant.data.id} resData={restaurant} />
         ))}
       </div>
