@@ -18,3 +18,4 @@
           {/* <ResturantCard resData={resList[0]} />
           <ResturantCard resData={resList[13]} />
           <ResturantCard resData={resList[14]} /> */} -->
+          resturant menu api -https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9715987&lng=77.5945627&page_type=DESKTOP_WEB_LISTING
