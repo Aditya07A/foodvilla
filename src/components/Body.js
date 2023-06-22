@@ -39,7 +39,7 @@ const Body = () => {
   const [filteredResturant, setFilteredResturant] = useState([]);
   
 
-  console.log("body rendered");
+  // console.log("body rendered");
   // const [listOfResturants, setListOfRestutant] = useState(resList); data coming from mockdata reslist
 
   useEffect(() => {
@@ -52,7 +52,7 @@ const Body = () => {
     );
 
     const json = await data.json();
-    console.log(json);
+    // console.log(json);
     //not got way of writing code
     //  setListOfRestutant(json.data.cards[2].data.data.cards)
 
