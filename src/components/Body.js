@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { CDN_URL } from "../utlis/constants.js";
 import Shimmer from "./Shimmer.js";
+import useOnlineStatus from "../utlis/useOnlineStatus.js";
 
 const ResturantCard = (props) => {
   const { resData } = props;
@@ -37,7 +38,6 @@ const Body = () => {
   const [listOfResturants, setListOfRestutant] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [filteredResturant, setFilteredResturant] = useState([]);
-  
 
   // console.log("body rendered");
   // const [listOfResturants, setListOfRestutant] = useState(resList); data coming from mockdata reslist
@@ -61,11 +61,19 @@ const Body = () => {
     setFilteredResturant(json?.data?.cards[2]?.data?.data?.cards);
   };
 
+  const onlineStatus = useOnlineStatus();
+  if (onlineStatus === false)
+    return (
+      <h1>
+        Looks like you're offline! Please check your internet connection..
+      </h1>
+    );
+
   //loading will come before API renders, but not a good way
   //  if(listOfResturants.length === 0){
-  //   // return <h1>Loading...</h1>;
+  // return <h1>Loading...</h1>;
 
-  //   //for fake cards shimmer
+  //for fake cards shimmer
   //   return <Shimmer/>;
   //  }
 
@@ -112,7 +120,7 @@ const Body = () => {
       <div className="res-container">
         {/* here by using map we are using dynamic data for resturant */}
         {filteredResturant.map((restaurant) => (
-        // {listOfResturants.map((restaurant) => (
+          // {listOfResturants.map((restaurant) => (
           <ResturantCard key={restaurant.data.id} resData={restaurant} />
         ))}
       </div>
